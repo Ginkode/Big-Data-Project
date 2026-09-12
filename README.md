@@ -1,15 +1,64 @@
-# SQL & NoSQL Database Systems Project
+# SQL & NoSQL Database Systems
 
-Portfolio project demonstrating three database paradigms through Python applications built with **SQLite**, **Neo4j**, and **Elasticsearch**.
+Three small Python projects built for a university database course, each using a different data model: **SQLite**, **Neo4j**, and **Elasticsearch**.
 
-The project was developed for a university Big Data / Database Systems course and has been reorganized to make the technologies, data models, and query patterns easy to review.
+I kept the projects together because the useful part is the comparison: the same Python workflow changes substantially depending on whether the data are relational, graph-based, or document-oriented.
 
-## Technologies
+## Projects
 
-- Python
-- SQLite / SQL
-- Neo4j / Cypher
-- Elasticsearch
+| Script | Technology | What it covers |
+|---|---|---|
+| `src/driving_school_sqlite.py` | SQLite / SQL | schema design, PK/FK constraints, checks, joins and aggregations |
+| `src/sports_federation_neo4j.py` | Neo4j / Cypher | graph modelling, temporal relationships, traversal and indirect connections |
+| `src/course_reviews_elasticsearch.py` | Elasticsearch | indexing, BM25 search, fuzzy matching, filters, highlighting and aggregations |
+
+All records used in the examples are synthetic.
+
+## SQLite: driving school
+
+The relational example models licence categories, candidates, instructors, vehicles, lessons and exams. The schema uses foreign keys and `CHECK` constraints, then runs queries and aggregations on the generated database.
+
+Run it with:
+
+```bash
+python src/driving_school_sqlite.py
+```
+
+`sqlite3` is part of the Python standard library and does not need to be installed separately.
+
+## Neo4j: sports federation
+
+The graph example contains cities, competitions, teams, athletes and coaches. Relationships include team membership, coaching periods, competition participation and event locations.
+
+The public entry point reads the connection credentials from environment variables. For example, in PowerShell:
+
+```powershell
+$env:NEO4J_URI="bolt://localhost:7687"
+$env:NEO4J_USER="neo4j"
+$env:NEO4J_PASSWORD="your-password"
+$env:NEO4J_DATABASE="neo4j"
+python src/sports_federation_neo4j.py
+```
+
+`.env.example` lists the expected variable names. The original university implementation is preserved in `src/_sports_federation_coursework.py`; the portfolio entry point overrides its local connection settings before execution.
+
+## Elasticsearch: course reviews
+
+The Elasticsearch example indexes synthetic student reviews and tests several search behaviours, including BM25 relevance, fuzzy matching, phrase queries, Boolean queries, highlighting, numeric/date filters and aggregations.
+
+A local Elasticsearch service is required before running:
+
+```bash
+python src/course_reviews_elasticsearch.py
+```
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+Neo4j and Elasticsearch must also be running locally for their respective scripts.
 
 ## Repository structure
 
@@ -18,106 +67,12 @@ Big-Data-Project/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
+├── .env.example
 └── src/
     ├── driving_school_sqlite.py
     ├── sports_federation_neo4j.py
+    ├── _sports_federation_coursework.py
     └── course_reviews_elasticsearch.py
 ```
 
-## 1. Relational database — SQLite
-
-`src/driving_school_sqlite.py`
-
-Models the operations of a driving school using a relational schema with entities for licence categories, candidates, instructors, vehicles, lessons, and exams.
-
-The implementation demonstrates:
-
-- primary and foreign keys;
-- referential-integrity constraints;
-- `CHECK` constraints;
-- inserts and relational queries;
-- aggregations and joins;
-- creation of a local SQLite database from Python.
-
-SQLite is included in Python's standard library, so no separate package installation is required.
-
-## 2. Graph database — Neo4j
-
-`src/sports_federation_neo4j.py`
-
-Models a sports federation as a graph containing cities, competitions, teams, athletes, and coaches.
-
-Example relationships include:
-
-```text
-(Team)-[:BASED_IN]->(City)
-(Athlete)-[:BELONGS_TO]->(Team)
-(Athlete)-[:PARTICIPATES_IN]->(Competition)
-(Coach)-[:COACHES]->(Team)
-```
-
-The project demonstrates:
-
-- graph modelling;
-- temporal relationship properties;
-- Cypher queries;
-- direct and indirect graph relationships;
-- graph traversal and aggregation.
-
-A local Neo4j instance is required to run this script.
-
-## 3. Document search and analytics — Elasticsearch
-
-`src/course_reviews_elasticsearch.py`
-
-Indexes synthetic student course-review documents and demonstrates document-oriented search and analytics.
-
-The queries include:
-
-- BM25 text relevance;
-- fuzzy matching;
-- Boolean keyword queries;
-- result highlighting;
-- phrase matching;
-- date and numeric filters;
-- significant-text analysis;
-- aggregations.
-
-A local Elasticsearch instance is required to run this script.
-
-## Installation
-
-Create a virtual environment and install the external dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Then run the desired example, for instance:
-
-```bash
-python src/driving_school_sqlite.py
-```
-
-The Neo4j and Elasticsearch examples additionally require their respective local services to be running.
-
-## Data
-
-All example records used in the project are synthetic and were created for educational purposes.
-
-## What this project demonstrates
-
-Rather than focusing on a single database technology, this repository compares how different data models support different use cases:
-
-| Paradigm | Technology | Main strength demonstrated |
-|---|---|---|
-| Relational | SQLite | structured schemas, constraints, joins |
-| Graph | Neo4j | relationships and traversal |
-| Document / search | Elasticsearch | full-text search and aggregations |
-
-## Possible improvements
-
-- move large synthetic seed datasets into separate data files;
-- read service credentials from environment variables;
-- add Docker Compose for Neo4j and Elasticsearch;
-- add automated integration tests.
+The code and comments from the original coursework are mostly in Italian; this README is in English so the project is easier to scan in an international portfolio.
